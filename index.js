@@ -24,8 +24,9 @@ app.get("/webhook", (req, res) => {
   // 2. Validate mode is 'subscribe' AND token matches your env variable
   if (mode === "subscribe" && token === VERIFY_TOKEN) {
     console.log("Webhook verified successfully!");
-    // Respond strictly with the challenge string
-    res.status(200).send(challenge);
+
+    // Explicitly set Content-Type to text/plain
+    return res.status(200).header("Content-Type", "text/plain").send(challenge);
   } else {
     // Return 403 Forbidden if verification fails
     res.sendStatus(403);
