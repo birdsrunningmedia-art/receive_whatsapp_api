@@ -6,6 +6,7 @@ import { configDotenv } from "dotenv";
 configDotenv();
 
 const app = express();
+app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
 // Renamed for clarity so it matches what you use below
@@ -31,6 +32,11 @@ app.get("/webhook", (req, res) => {
     // Return 403 Forbidden if verification fails
     res.sendStatus(403);
   }
+});
+
+app.post("/webhook", (req, res) => {
+  console.log(JSON.stringify(req.body, null, 2));
+  res.status(200).send("Webhook processed.");
 });
 
 app.listen(PORT, () => {
