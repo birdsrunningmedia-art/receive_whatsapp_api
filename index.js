@@ -35,8 +35,14 @@ app.get("/webhook", (req, res) => {
 });
 
 app.post("/webhook", (req, res) => {
-  console.log(JSON.stringify(req.body, null, 2));
-  res.status(200).send("Webhook processed.");
+  // 2. Wrap in try/catch to prevent silent serverless crashes
+  try {
+    console.log("POST Body Received:", JSON.stringify(req.body, null, 2));
+    res.status(200).send("EVENT_RECEIVED");
+  } catch (error) {
+    console.error("Error processing POST:", error);
+    res.status(500).send("Error");
+  }
 });
 
 app.listen(PORT, () => {
