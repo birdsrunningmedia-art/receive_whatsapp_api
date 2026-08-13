@@ -17,6 +17,12 @@ app.get("/webhook", (req, res) => {
   const mode = req.query["hub.mode"];
   const challenge = req.query["hub.challenge"];
   const token = req.query["hub.verify_token"];
+
+  if (mode && token === WEBHOOK_VERIFY_TOKEN) {
+    res.status(200).send(challenge);
+  } else {
+    res.sendStatus(403);
+  }
 });
 
 app.listen(PORT, () => {
