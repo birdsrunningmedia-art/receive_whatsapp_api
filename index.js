@@ -6,8 +6,10 @@ import { configDotenv } from "dotenv";
 configDotenv();
 
 const app = express();
-const PORT = 3000;
-const token = process.env.WEBHOOK_VERIFY_TOKEN;
+const PORT = process.env.PORT || 3000;
+
+// Renamed for clarity so it matches what you use below
+const VERIFY_TOKEN = process.env.WEBHOOK_VERIFY_TOKEN;
 
 app.get("/", (req, res) => {
   res.send("Server is live with ES modules!");
@@ -18,9 +20,14 @@ app.get("/webhook", (req, res) => {
   const challenge = req.query["hub.challenge"];
   const token = req.query["hub.verify_token"];
 
-  if (mode && token === WEBHOOK_VERIFY_TOKEN) {
+  // 1. Check if mode and token exist
+  // 2. Validate mode is 'subscribe' AND token matches your env variable
+  if (mode === "subscribe" && token === VERIFY_TOKEN) {
+    console.log("Webhook verified successfully!");
+    // Respond strictly with the challenge string
     res.status(200).send(challenge);
   } else {
+    // Return 403 Forbidden if verification fails
     res.sendStatus(403);
   }
 });
